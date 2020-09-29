@@ -2,8 +2,11 @@ import requests
 import json
 import os
 
-WORKABLE_API = 'https://dextra.workable.com/spi/v3'
-WORKABLE_TOKEN = os.environ['WORKABLE_TOKEN'])
+
+WORKABLE_TOKEN = os.environ['WORKABLE_TOKEN']
+WORKABLE_DOMAIN = os.environ['WORKABLE_DOMAIN']
+
+WORKABLE_API = f'https://{WORKABLE_DOMAIN}.workable.com/spi/v3'
 
 def get(path, params={}):
     headers = {
