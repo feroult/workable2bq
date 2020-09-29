@@ -42,8 +42,9 @@ def load_collection(start_path, key, fn):
 def load_job(job):
     shortcode = job['shortcode']
     print(shortcode)
-    path = f'jobs/{shortcode}/activities?limit=1000'
-    load_collection(path, 'activities', load_activity)
+    load_collection(f'jobs/{shortcode}/activities?limit=1000',
+                    'activities',
+                    load_activity)
 
 
 def load_jobs():
