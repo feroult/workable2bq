@@ -48,13 +48,9 @@ def load_job(job):
 
 
 def load_jobs():
-    r = get('jobs', {'state': 'published'})
-    jobs = r.json()['jobs']
-
-    for job in jobs:
-        load_job(job)
-        # print(json.dumps(job))
-        # print(json.dumps(r.json(), indent=1))
+    load_collection(f'jobs?state=published&limit=1000',
+                    'jobs',
+                    load_job)
 
 
 if __name__ == '__main__':
