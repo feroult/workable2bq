@@ -20,6 +20,7 @@ ENV PATH "/opt/google-cloud-sdk/bin:$PATH"
 RUN pip3 install google-cloud-storage
 RUN pip3 install requests
 
+RUN mkdir /exports
 RUN mkdir /app
 WORKDIR /app
 

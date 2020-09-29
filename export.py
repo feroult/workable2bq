@@ -18,30 +18,36 @@ def get(path, params={}):
     return requests.get(f'{WORKABLE_API}/{path}', headers=headers, params=params)
 
 
+def load_collection(start_path, key, fn):
+    with open(f'/exports/{key}.json', 'a+') as writer:
+        path = start_path
+        while True:
+            print(path)
+            j = get(path).json()
+            if key in j:
+                for el in j[key]:
+                    writer.write(json.dumps(el))
+                    writer.write('\n')
+                    fn(el)
+            else:
+                print(j)
+            if 'paging' in j:
+                path = j['paging']['next'][len(WORKABLE_API)+1:]
+                time.sleep(0.5)
+            else:
+                break
+
+
 def load_activity(activity):
     pass
 
 
-def load_collection(start_path, key, fn):
-    path = start_path
-    while True:
-        j = get(path).json()
-        if key in j:
-            for activity in j[key]:
-                fn(activity)
-        else:
-            print(j)
-        if 'paging' in j:
-            path = j['paging']['next'][len(WORKABLE_API)+1:]
-            print(path)
-            time.sleep(0.5)
-        else:
-            break
+def load_candidate(activity):
+    pass
 
 
 def load_job(job):
     shortcode = job['shortcode']
-    print(shortcode)
     load_collection(f'jobs/{shortcode}/activities?limit=1000',
                     'activities',
                     load_activity)
@@ -53,5 +59,12 @@ def load_jobs():
                     load_job)
 
 
+def load_candidates():
+    load_collection(f'candidates?limit=1000',
+                    'candidates',
+                    load_candidate)
+
+
 if __name__ == '__main__':
-    load_jobs()
+    # load_jobs()
+    load_candidates()
