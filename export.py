@@ -2,7 +2,7 @@ import requests
 import json
 import os
 import time
-
+import hashlib
 
 WORKABLE_TOKEN = os.environ['WORKABLE_TOKEN']
 WORKABLE_DOMAIN = os.environ['WORKABLE_DOMAIN']
@@ -26,24 +26,32 @@ def load_collection(start_path, key, fn):
             j = get(path).json()
             if key in j:
                 for el in j[key]:
-                    writer.write(json.dumps(el))
+                    o = fn(el)
+                    writer.write(json.dumps(o))
                     writer.write('\n')
-                    fn(el)
             else:
                 print(j)
             if 'paging' in j:
                 path = j['paging']['next'][len(WORKABLE_API)+1:]
-                time.sleep(0.5)
+                time.sleep(1)
             else:
                 break
 
 
 def load_activity(activity):
-    pass
+    if 'candidate' in activity:
+        activity['candidate']['name'] = hashlib.sha1(
+            activity['candidate']['name'].encode('utf-8')).hexdigest()
+    if 'member' in activity:            
+        activity['member']['name'] = hashlib.sha1(
+            activity['member']['name'].encode('utf-8')).hexdigest()
+
+    activity['body'] = ''
+    return activity
 
 
-def load_candidate(activity):
-    pass
+def load_candidate(candidate):
+    return candidate
 
 
 def load_job(job):
@@ -51,6 +59,7 @@ def load_job(job):
     load_collection(f'jobs/{shortcode}/activities?limit=1000',
                     'activities',
                     load_activity)
+    return job
 
 
 def load_jobs():
@@ -66,5 +75,5 @@ def load_candidates():
 
 
 if __name__ == '__main__':
-    # load_jobs()
-    load_candidates()
+    load_jobs()
+    # load_candidates()
