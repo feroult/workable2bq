@@ -33,7 +33,7 @@ def load_collection(start_path, key, fn, context = {}):
                 print(j)
             if 'paging' in j:
                 path = j['paging']['next'][len(WORKABLE_API)+1:]
-                time.sleep(1)
+                time.sleep(5)
             else:
                 break
 
@@ -58,7 +58,7 @@ def load_candidate(candidate, context):
 def load_job(job, context):
     shortcode = job['shortcode']
     context['job_shortcode'] = shortcode
-    load_collection(f'jobs/{shortcode}/activities?limit=1000',
+    load_collection(f'jobs/{shortcode}/activities?limit=3000',
                     'activities',
                     load_activity)
     return job
