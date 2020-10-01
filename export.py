@@ -18,7 +18,7 @@ def get(path, params={}):
     return requests.get(f'{WORKABLE_API}/{path}', headers=headers, params=params)
 
 
-def load_collection(start_path, key, fn):
+def load_collection(start_path, key, fn, context = {}):
     with open(f'/exports/{key}.json', 'a+') as writer:
         path = start_path
         while True:
@@ -26,7 +26,7 @@ def load_collection(start_path, key, fn):
             j = get(path).json()
             if key in j:
                 for el in j[key]:
-                    o = fn(el)
+                    o = fn(el, context)
                     writer.write(json.dumps(o))
                     writer.write('\n')
             else:
@@ -38,7 +38,7 @@ def load_collection(start_path, key, fn):
                 break
 
 
-def load_activity(activity):
+def load_activity(activity, context):
     if 'candidate' in activity:
         activity['candidate']['name'] = hashlib.sha1(
             activity['candidate']['name'].encode('utf-8')).hexdigest()
@@ -47,15 +47,17 @@ def load_activity(activity):
             activity['member']['name'].encode('utf-8')).hexdigest()
 
     activity['body'] = ''
+    activity['job_shortcode'] = context['job_shortcode']
     return activity
 
 
-def load_candidate(candidate):
+def load_candidate(candidate, context):
     return candidate
 
 
-def load_job(job):
+def load_job(job, context):
     shortcode = job['shortcode']
+    context['job_shortcode'] = shortcode
     load_collection(f'jobs/{shortcode}/activities?limit=1000',
                     'activities',
                     load_activity)
