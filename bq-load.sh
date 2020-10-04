@@ -13,12 +13,12 @@ load() {
     echo "---------"
 }
 
-create_stages_flow() {
+create_flow() {
 
-  echo "Creating stages_flow..."
+  echo "Creating flow..."
 
   bq query \
-    --destination_table views.stages_flow \
+    --destination_table views.flow \
     --replace \
     --use_legacy_sql=false \
 "WITH valid_candidates AS
@@ -87,16 +87,29 @@ activities AS
   )
 )
 
-SELECT * FROM activities"
+SELECT *,
+  CASE
+     WHEN stage = 'Sourced' THEN 1
+     WHEN stage = 'Applied' THEN 2
+     WHEN stage = 'Fazer Contato' THEN 3
+     WHEN stage = 'Mapea' THEN 4
+     WHEN stage = 'Av.Técnica' THEN 5
+     WHEN stage = 'Entrevista DEXTRA' THEN 6
+     WHEN stage = 'Proposta' THEN 7
+     WHEN stage = 'Aprovado/Contratado' THEN 8
+     WHEN stage = 'Disqualified' THEN 9
+     ELSE 10
+  END stage_order
+  FROM activities"
 
 }
 
-create_stages_cumulative_flow() {
+create_cumulative_flow() {
 
     echo "Creating stages_cumulative_flow..."
 
     bq query \
-        --destination_table views.stages_cumulative_flow \
+        --destination_table views.cumulative_flow \
         --replace \
         --use_legacy_sql=false \
 "WITH date_range AS
@@ -104,20 +117,20 @@ create_stages_cumulative_flow() {
   SELECT
         DATE_SUB(DATE_TRUNC(CURRENT_DATE(), DAY), INTERVAL date DAY) date
       FROM
-        UNNEST(GENERATE_ARRAY(0, (SELECT MAX(DATE_DIFF(CURRENT_DATE(), date, DAY)) from views.stages_flow))) AS date
+        UNNEST(GENERATE_ARRAY(0, (SELECT MAX(DATE_DIFF(CURRENT_DATE(), date, DAY)) from views.flow))) AS date
 ),
 max_dates AS (
   select candidate_id, stage, min(date) date from
     (
       select a1.candidate.id candidate_id, a1.stage stage, a2.date date
         from views.stages_flow a1
-      left outer join views.stages_flow a2 on a1.candidate.id = a2.candidate.id and a1.stage <> a2.stage and a1.date < a2.date
+      left outer join views.stages_flow a2 on a1.candidate.id = a2.candidate.id and a1.stage <> a2.stage and a1.created_at < a2.created_at
     )
   group by candidate_id, stage
 ),
 cross_stages AS 
 (
-  SELECT candidate, job, stage, d.date FROM views.stages_flow a
+  SELECT candidate, job, stage, stage_order, d.date FROM views.stages_flow a
     FULL OUTER JOIN date_range d ON TRUE
    WHERE d.date >= a.date
 ),
@@ -133,12 +146,12 @@ SELECT * FROM stages_cumulative_flow"
 
 }
 
-create_stages_daily() {
+create_daily_flow() {
 
-    echo "Creating stages_daily..."
+    echo "Creating daily_flow..."
 
     bq query \
-        --destination_table views.stages_daily \
+        --destination_table views.daily_flow \
         --replace \
         --use_legacy_sql=false \
 "SELECT *, DATE_TRUNC(date, WEEK(SUNDAY)) week FROM views.stages_flow"
@@ -151,9 +164,9 @@ create_stages_daily() {
 
 # views
 
-# create_stages_flow
-# create_stages_cumulative_flow
-create_stages_daily
+create_flow
+create_cumulative_flow
+create_daily_flow
 
 # create_activities_flow
 # create_activities_daily
