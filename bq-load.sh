@@ -123,14 +123,14 @@ max_dates AS (
   select candidate_id, stage, min(date) date from
     (
       select a1.candidate.id candidate_id, a1.stage stage, a2.date date
-        from views.stages_flow a1
-      left outer join views.stages_flow a2 on a1.candidate.id = a2.candidate.id and a1.stage <> a2.stage and a1.created_at < a2.created_at
+        from views.flow a1
+      left outer join views.flow a2 on a1.candidate.id = a2.candidate.id and a1.stage <> a2.stage and a1.created_at < a2.created_at
     )
   group by candidate_id, stage
 ),
 cross_stages AS 
 (
-  SELECT candidate, job, stage, stage_order, d.date FROM views.stages_flow a
+  SELECT candidate, job, stage, stage_order, d.date FROM views.flow a
     FULL OUTER JOIN date_range d ON TRUE
    WHERE d.date >= a.date
 ),
@@ -154,7 +154,7 @@ create_daily_flow() {
         --destination_table views.daily_flow \
         --replace \
         --use_legacy_sql=false \
-"SELECT *, DATE_TRUNC(date, WEEK(SUNDAY)) week FROM views.stages_flow"
+"SELECT *, DATE_TRUNC(date, WEEK(SUNDAY)) week FROM views.flow"
 
 }
 
