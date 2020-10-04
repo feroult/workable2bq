@@ -39,12 +39,12 @@ def load_collection(start_path, key, fn, context = {}):
 
 
 def load_activity(activity, context):
-    if 'candidate' in activity:
-        activity['candidate']['name'] = hashlib.sha1(
-            activity['candidate']['name'].encode('utf-8')).hexdigest()
-    if 'member' in activity:            
-        activity['member']['name'] = hashlib.sha1(
-            activity['member']['name'].encode('utf-8')).hexdigest()
+    # if 'candidate' in activity:
+    #     activity['candidate']['name'] = hashlib.sha1(
+    #         activity['candidate']['name'].encode('utf-8')).hexdigest()
+    # if 'member' in activity:            
+    #     activity['member']['name'] = hashlib.sha1(
+    #         activity['member']['name'].encode('utf-8')).hexdigest()
 
     activity['body'] = ''
     activity['job_shortcode'] = context['job_shortcode']
@@ -71,11 +71,11 @@ def load_jobs():
 
 
 def load_candidates():
-    load_collection(f'candidates?limit=1000',
+    load_collection(f'candidates?limit=3000',
                     'candidates',
                     load_candidate)
 
 
 if __name__ == '__main__':
+    load_candidates()
     load_jobs()
-    # load_candidates()
