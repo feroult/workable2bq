@@ -85,18 +85,6 @@ activities AS
     UNION ALL
     SELECT * FROM disqualified
   )
-),
-last_stages AS
-(
-  SELECT a.* 
-    FROM activities a
-    JOIN 
-    (
-      SELECT candidate.id, MAX(created_at) created_at
-        FROM activities
-       GROUP BY candidate.id    
-    ) m
-    ON a.candidate.id = m.id AND a.created_at = m.created_at
 )
 
 SELECT * FROM activities"
