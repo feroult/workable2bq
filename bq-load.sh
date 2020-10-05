@@ -75,7 +75,7 @@ valid_activities AS
    JOIN valid_candidates c ON c.id = a.candidate.id   
   WHERE stage_name IS NOT NULL
 ),
-activities AS
+activities_union AS
 (
   SELECT *, DATE_TRUNC(EXTRACT(DATE FROM created_at), DAY) as date FROM
   (
@@ -85,8 +85,8 @@ activities AS
     UNION ALL
     SELECT * FROM disqualified
   )
-)
-
+),
+activities_uuid AS (
 SELECT 
   GENERATE_UUID() uuid,
   *,
@@ -102,7 +102,35 @@ SELECT
      WHEN stage = 'Disqualified' THEN 9
      ELSE 10
   END stage_order
-  FROM activities"
+  FROM activities_union
+),
+activities AS
+(
+  SELECT 
+    uuid,
+    STRUCT(
+       a.candidate.id, 
+       a.candidate.name,
+       a.candidate.domain,
+       c.sourced,     
+       CASE
+          WHEN c.hired_at IS NOT NULL THEN 'hired'
+          WHEN c.disqualified = true THEN 'disqualified'
+          ELSE 'open'
+       END AS status,
+       c.created_at,
+       c.updated_at
+    ) AS candidate,
+    a.job,
+    a.stage,
+    a.created_at,
+    a.date,
+    a.stage_order
+    FROM activities_uuid a
+    LEFT JOIN workable.candidates c ON a.candidate.id = c.id
+)
+
+SELECT * FROM activities"
 
 }
 
@@ -159,9 +187,9 @@ create_daily_flow() {
 
 }
 
-# load jobs
-# load activities
-# load candidates
+load jobs
+load activities
+load candidates
 
 # views
 

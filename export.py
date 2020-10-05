@@ -45,8 +45,7 @@ def load_activity(activity, context):
     # if 'member' in activity:            
     #     activity['member']['name'] = hashlib.sha1(
     #         activity['member']['name'].encode('utf-8')).hexdigest()
-
-    activity['body'] = ''
+    # activity['body'] = ''
     activity['job_shortcode'] = context['job_shortcode']
     return activity
 
