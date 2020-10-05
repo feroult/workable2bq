@@ -87,7 +87,9 @@ activities AS
   )
 )
 
-SELECT *,
+SELECT 
+  GENERATE_UUID() uuid,
+  *,
   CASE
      WHEN stage = 'Sourced' THEN 1
      WHEN stage = 'Applied' THEN 2
@@ -120,29 +122,28 @@ create_cumulative_flow() {
         UNNEST(GENERATE_ARRAY(0, (SELECT MAX(DATE_DIFF(CURRENT_DATE(), date, DAY)) from views.flow))) AS date
 ),
 max_dates AS (
-  select candidate_id, stage, min(date) date from
-    (
-      select a1.candidate.id candidate_id, a1.stage stage, a2.date date
-        from views.flow a1
-      left outer join views.flow a2 on a1.candidate.id = a2.candidate.id and a1.stage <> a2.stage and a1.created_at < a2.created_at
-    )
-  group by candidate_id, stage
+  SELECT *,
+         LEAD(date) OVER (PARTITION BY candidate.id ORDER BY created_at ASC) AS max_date
+    FROM views.flow
+  ORDER BY created_at
 ),
 cross_stages AS 
 (
-  SELECT candidate, job, stage, stage_order, d.date FROM views.flow a
+  SELECT uuid, candidate, job, stage, stage_order, d.date FROM views.flow a
     FULL OUTER JOIN date_range d ON TRUE
    WHERE d.date >= a.date
 ),
-stages_cumulative_flow AS 
+cumulative_flow AS 
 (
-   select c.* from cross_stages c
-   where 
-     ( date < (select date from max_dates m where candidate_id = c.candidate.id and m.stage = c.stage) 
-            OR (select date from max_dates m where candidate_id = c.candidate.id and m.stage = c.stage) IS NULL)
+  SELECT c.* 
+    FROM cross_stages c
+   WHERE 
+      ( date < (SELECT max_date FROM max_dates m WHERE uuid = c.uuid) 
+            OR (SELECT max_date FROM max_dates m WHERE uuid = c.uuid) IS NULL)
+    ORDER BY date
 )
 
-SELECT * FROM stages_cumulative_flow"
+SELECT * FROM cumulative_flow"
 
 }
 
