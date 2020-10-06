@@ -114,8 +114,8 @@ activities AS
        a.candidate.domain,
        c.sourced,     
        CASE
-          WHEN c.hired_at IS NOT NULL THEN 'hired'
           WHEN c.disqualified = true THEN 'disqualified'
+          WHEN c.hired_at IS NOT NULL THEN 'hired'
           ELSE 'open'
        END AS status,
        c.created_at,
