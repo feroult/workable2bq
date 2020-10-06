@@ -26,6 +26,7 @@ create_flow() {
   SELECT c.* 
     FROM workable.candidates c
     JOIN workable.jobs j ON c.job.shortcode = j.shortcode
+     AND j.department = 'DEXTRA'
 ),
 last_stage_activities AS
 (
@@ -74,6 +75,7 @@ valid_activities AS
    JOIN workable.jobs j ON a.job_shortcode = j.shortcode   
    JOIN valid_candidates c ON c.id = a.candidate.id   
   WHERE stage_name IS NOT NULL
+    AND j.department = 'DEXTRA'
 ),
 activities_union AS
 (
@@ -190,8 +192,8 @@ SELECT * FROM cumulative_flow"
 
 # views
 
-# create_flow
-# create_max_dates
+create_flow
+create_max_dates
 create_cumulative_flow
 
 # create_activities_flow
