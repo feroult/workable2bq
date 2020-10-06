@@ -41,6 +41,7 @@ def load_collection(start_path, key, fn, context={}):
                     writer.write('\n')
             else:
                 print(j)
+                time.sleep(2)
                 continue
             if 'paging' in j:
                 path = j['paging']['next'][len(WORKABLE_API)+1:]
