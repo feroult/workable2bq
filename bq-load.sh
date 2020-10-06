@@ -135,9 +135,24 @@ SELECT * FROM activities"
 
 }
 
+create_max_dates() {
+
+    echo "Creating max_dates..."
+
+    bq query \
+        --destination_table views.max_dates \
+        --replace \
+        --use_legacy_sql=false \
+"SELECT *,
+        LEAD(date) OVER (PARTITION BY candidate.id ORDER BY created_at ASC) AS max_date
+  FROM views.flow
+ORDER BY created_at"
+
+}
+
 create_cumulative_flow() {
 
-    echo "Creating stages_cumulative_flow..."
+    echo "Creating cumulative_flow..."
 
     bq query \
         --destination_table views.cumulative_flow \
@@ -150,12 +165,6 @@ create_cumulative_flow() {
       FROM
         UNNEST(GENERATE_ARRAY(0, (SELECT MAX(DATE_DIFF(CURRENT_DATE(), date, DAY)) from views.flow))) AS date
 ),
-max_dates AS (
-  SELECT *,
-         LEAD(date) OVER (PARTITION BY candidate.id ORDER BY created_at ASC) AS max_date
-    FROM views.flow
-  ORDER BY created_at
-),
 cross_stages AS 
 (
   SELECT uuid, candidate, job, stage, stage_order, d.date FROM views.flow a
@@ -167,22 +176,22 @@ cumulative_flow AS
   SELECT c.* 
     FROM cross_stages c
    WHERE 
-      ( date < (SELECT max_date FROM max_dates m WHERE uuid = c.uuid) 
-            OR (SELECT max_date FROM max_dates m WHERE uuid = c.uuid) IS NULL)
-    ORDER BY date
+      ( date < (SELECT max_date FROM views.max_dates m WHERE uuid = c.uuid) 
+            OR (SELECT max_date FROM views.max_dates m WHERE uuid = c.uuid) IS NULL)
 )
 
 SELECT * FROM cumulative_flow"
 
 }
 
-load jobs
-load activities
-load candidates
+# load jobs
+# load activities
+# load candidates
 
 # views
 
-create_flow
+# create_flow
+# create_max_dates
 create_cumulative_flow
 
 # create_activities_flow

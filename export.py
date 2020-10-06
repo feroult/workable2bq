@@ -69,9 +69,10 @@ def load_candidate(candidate, context):
 def load_job(job, context):
     shortcode = job['shortcode']
     context['job_shortcode'] = shortcode
-    load_collection(f'jobs/{shortcode}/activities?limit={LIMIT}',
-                    'activities',
-                    load_activity)
+    if 'department' in job and job['department'] == 'DEXTRA':
+        load_collection(f'jobs/{shortcode}/activities?limit={LIMIT}',
+                        'activities',
+                        load_activity)
     return job
 
 
