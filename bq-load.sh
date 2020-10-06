@@ -125,6 +125,7 @@ activities AS
     a.stage,
     a.created_at,
     a.date,
+    DATE_TRUNC(a.date, WEEK(MONDAY)) week,
     a.stage_order
     FROM activities_uuid a
     LEFT JOIN workable.candidates c ON a.candidate.id = c.id
@@ -175,27 +176,14 @@ SELECT * FROM cumulative_flow"
 
 }
 
-create_daily_flow() {
-
-    echo "Creating daily_flow..."
-
-    bq query \
-        --destination_table views.daily_flow \
-        --replace \
-        --use_legacy_sql=false \
-"SELECT *, DATE_TRUNC(date, WEEK(SUNDAY)) week FROM views.flow"
-
-}
-
-load jobs
-load activities
-load candidates
+# load jobs
+# load activities
+# load candidates
 
 # views
 
 create_flow
 create_cumulative_flow
-create_daily_flow
 
 # create_activities_flow
 # create_activities_daily
