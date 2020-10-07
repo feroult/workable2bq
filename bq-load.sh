@@ -121,7 +121,8 @@ activities AS
           ELSE 'open'
        END AS status,
        c.created_at,
-       c.updated_at
+       c.updated_at,
+       TIMESTAMP(c.hired_at) AS hired_at
     ) AS candidate,
     a.job,
     a.stage,
