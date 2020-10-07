@@ -129,6 +129,7 @@ activities AS
     a.created_at,
     a.date,
     DATE_TRUNC(a.date, WEEK(MONDAY)) week,
+    DATE_TRUNC(a.date, MONTH) month,
     a.stage_order
     FROM activities_uuid a
     LEFT JOIN workable.candidates c ON a.candidate.id = c.id
