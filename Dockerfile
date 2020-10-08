@@ -26,3 +26,6 @@ WORKDIR /app
 
 COPY . .
 
+CMD ./export.sh
+
+
