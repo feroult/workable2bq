@@ -26,6 +26,6 @@ WORKDIR /app
 
 COPY . .
 
-CMD ./export.sh
-
+RUN pip3 install Flask gunicorn requests
+CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 app:app
 

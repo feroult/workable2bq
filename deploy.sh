@@ -9,6 +9,6 @@ gcloud run deploy workable2bq \
     --memory 512Mi \
     --set-env-vars "WORKABLE_TOKEN=$WORKABLE_TOKEN" \
     --set-env-vars "WORKABLE_DOMAIN=$WORKABLE_DOMAIN" \
-    --timeout=15m
+    --timeout=15m \
     -q
 
