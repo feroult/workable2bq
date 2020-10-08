@@ -1,4 +1,4 @@
-#!/bin/sh 
+#!/bin/sh -x
 
 curl -H \
     "Authorization: Bearer $(gcloud auth print-identity-token)" \
