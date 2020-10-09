@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def update():
-    subprocess.run(["/app/export.sh"])
+    subprocess.run(["/app/bin/export.sh"])
     return 'ok'
 
 if __name__ == "__main__":
