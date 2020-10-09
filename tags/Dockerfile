@@ -17,7 +17,7 @@ RUN curl https://sdk.cloud.google.com | \
     /opt/google-cloud-sdk/bin/gcloud components install beta -q
 ENV PATH "/opt/google-cloud-sdk/bin:$PATH"
 
-RUN pip3 install google-cloud-storage
+RUN pip3 install google-cloud-storage google-cloud-bigquery
 RUN pip3 install requests
 
 RUN mkdir /exports
