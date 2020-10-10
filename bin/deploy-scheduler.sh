@@ -13,14 +13,24 @@ create_service_account() {
     --role roles/run.invoker
 }
 
-create_scheduler() {
+create_views_scheduler() {
   gcloud scheduler jobs delete ${JOB_ID}
   gcloud scheduler jobs create http ${JOB_ID} \
     --http-method=GET \
-    --schedule="5 8-20 * * *" \
-    --uri=${URI} \
+    --schedule="0 8-20 * * *" \
+    --uri=${URI}/views \
+    --oidc-service-account-email=${CLIENT_SERVICE_ACCOUNT_EMAIL}
+}
+
+create_tags_scheduler() {
+  gcloud scheduler jobs delete ${JOB_ID}
+  gcloud scheduler jobs create http ${JOB_ID} \
+    --http-method=GET \
+    --schedule="20,30,40 8-20 * * *" \
+    --uri=${URI}/tags \
     --oidc-service-account-email=${CLIENT_SERVICE_ACCOUNT_EMAIL}
 }
 
 # create_service_account
-create_scheduler
+create_views_scheduler
+create_tags_scheduler
