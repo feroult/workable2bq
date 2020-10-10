@@ -11,9 +11,9 @@ storage_client = storage.Client()
 
 BUCKET_NAME = os.environ['BUCKET_NAME']
 DEFAULT_CURSOR = '2020-01-01'
-LIMIT = 2000
+LIMIT = 200
 
-SAVE_CURSOR_COUNT = 100
+SAVE_CURSOR_COUNT = 50
 
 
 def load_candidates():
