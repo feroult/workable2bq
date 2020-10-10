@@ -7,13 +7,13 @@ app = Flask(__name__)
 
 
 @app.route('/views')
-def update():
+def views():
     subprocess.run(["/app/bin/export-views.sh"])
     return 'ok'
 
 
 @app.route('/candidates')
-def update():
+def candidates():
     subprocess.run(["/app/bin/export-candidates.sh"])
     return 'ok'
 
