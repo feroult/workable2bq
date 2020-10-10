@@ -11,9 +11,9 @@ storage_client = storage.Client()
 
 BUCKET_NAME = os.environ['BUCKET_NAME']
 DEFAULT_CURSOR = '2020-01-01'
-LIMIT = 10
+LIMIT = 2000
 
-SAVE_CURSOR_COUNT = 5
+SAVE_CURSOR_COUNT = 100
 
 
 def load_candidates():
@@ -35,6 +35,9 @@ def load_candidates():
         if batch_count % SAVE_CURSOR_COUNT == 0:
             save_cursor(row['updated_at'])
 
+    if row:
+        save_cursor(row['updated_at'])
+
 
 def load_candidate(id):
     with open(f'/export_candidates/{id}.json', 'w') as writer:
@@ -46,8 +49,10 @@ def load_candidate(id):
                 time.sleep(2)
                 continue
             o = j['candidate']
-            writer.write(json.dumps(o))
-            time.sleep(0.3)
+            s = json.dumps(o)
+            writer.write(s)
+            upload_string(s, f'candidates/{id}.json')
+            time.sleep(0.2)
             break
 
 

@@ -1,0 +1,340 @@
+[
+    {
+        "mode": "REPEATED",
+        "name": "tags",
+        "type": "STRING"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "resume_url",
+        "type": "STRING"
+    },
+    {
+        "fields": [
+            {
+                "mode": "NULLABLE",
+                "name": "current",
+                "type": "BOOLEAN"
+            },
+            {
+                "mode": "NULLABLE",
+                "name": "industry",
+                "type": "STRING"
+            },
+            {
+                "mode": "NULLABLE",
+                "name": "company",
+                "type": "STRING"
+            },
+            {
+                "mode": "NULLABLE",
+                "name": "id",
+                "type": "STRING"
+            },
+            {
+                "description": "%E4Y-%m-%d",
+                "mode": "NULLABLE",
+                "name": "end_date",
+                "type": "DATE"
+            },
+            {
+                "mode": "NULLABLE",
+                "name": "summary",
+                "type": "STRING"
+            },
+            {
+                "description": "%E4Y-%m-%d",
+                "mode": "NULLABLE",
+                "name": "start_date",
+                "type": "DATE"
+            },
+            {
+                "mode": "NULLABLE",
+                "name": "title",
+                "type": "STRING"
+            }
+        ],
+        "mode": "REPEATED",
+        "name": "experience_entries",
+        "type": "RECORD"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "summary",
+        "type": "STRING"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "cover_letter",
+        "type": "STRING"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "domain",
+        "type": "STRING"
+    },
+    {
+        "fields": [
+            {
+                "mode": "NULLABLE",
+                "name": "name",
+                "type": "STRING"
+            }
+        ],
+        "mode": "REPEATED",
+        "name": "skills",
+        "type": "RECORD"
+    },
+    {
+        "fields": [
+            {
+                "mode": "NULLABLE",
+                "name": "field_of_study",
+                "type": "STRING"
+            },
+            {
+                "description": "%E4Y-%m-%d",
+                "mode": "NULLABLE",
+                "name": "start_date",
+                "type": "DATE"
+            },
+            {
+                "mode": "NULLABLE",
+                "name": "school",
+                "type": "STRING"
+            },
+            {
+                "mode": "NULLABLE",
+                "name": "degree",
+                "type": "STRING"
+            },
+            {
+                "description": "%E4Y-%m-%d",
+                "mode": "NULLABLE",
+                "name": "end_date",
+                "type": "DATE"
+            },
+            {
+                "mode": "NULLABLE",
+                "name": "id",
+                "type": "STRING"
+            }
+        ],
+        "mode": "REPEATED",
+        "name": "education_entries",
+        "type": "RECORD"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "uploader_id",
+        "type": "STRING"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "email",
+        "type": "STRING"
+    },
+    {
+        "fields": [
+            {
+                "mode": "NULLABLE",
+                "name": "url",
+                "type": "STRING"
+            },
+            {
+                "mode": "NULLABLE",
+                "name": "username",
+                "type": "STRING"
+            },
+            {
+                "mode": "NULLABLE",
+                "name": "name",
+                "type": "STRING"
+            },
+            {
+                "mode": "NULLABLE",
+                "name": "type",
+                "type": "STRING"
+            }
+        ],
+        "mode": "REPEATED",
+        "name": "social_profiles",
+        "type": "RECORD"
+    },
+    {
+        "fields": [
+            {
+                "fields": [
+                    {
+                        "mode": "NULLABLE",
+                        "name": "body",
+                        "type": "STRING"
+                    },
+                    {
+                        "mode": "NULLABLE",
+                        "name": "checked",
+                        "type": "BOOLEAN"
+                    },
+                    {
+                        "fields": [
+                            {
+                                "mode": "NULLABLE",
+                                "name": "body",
+                                "type": "STRING"
+                            }
+                        ],
+                        "mode": "REPEATED",
+                        "name": "choices",
+                        "type": "RECORD"
+                    }
+                ],
+                "mode": "NULLABLE",
+                "name": "answer",
+                "type": "RECORD"
+            },
+            {
+                "fields": [
+                    {
+                        "mode": "NULLABLE",
+                        "name": "body",
+                        "type": "STRING"
+                    }
+                ],
+                "mode": "NULLABLE",
+                "name": "question",
+                "type": "RECORD"
+            }
+        ],
+        "mode": "REPEATED",
+        "name": "answers",
+        "type": "RECORD"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "phone",
+        "type": "STRING"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "profile_url",
+        "type": "STRING"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "image_url",
+        "type": "STRING"
+    },
+    {
+        "fields": [
+            {
+                "mode": "NULLABLE",
+                "name": "name",
+                "type": "STRING"
+            },
+            {
+                "mode": "NULLABLE",
+                "name": "subdomain",
+                "type": "STRING"
+            }
+        ],
+        "mode": "NULLABLE",
+        "name": "account",
+        "type": "RECORD"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "address",
+        "type": "STRING"
+    },
+    {
+        "description": "bq-datetime",
+        "mode": "NULLABLE",
+        "name": "hired_at",
+        "type": "TIMESTAMP"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "disqualified",
+        "type": "BOOLEAN"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "stage",
+        "type": "STRING"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "sourced",
+        "type": "BOOLEAN"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "disqualification_reason",
+        "type": "STRING"
+    },
+    {
+        "fields": [
+            {
+                "mode": "NULLABLE",
+                "name": "title",
+                "type": "STRING"
+            },
+            {
+                "mode": "NULLABLE",
+                "name": "shortcode",
+                "type": "STRING"
+            }
+        ],
+        "mode": "NULLABLE",
+        "name": "job",
+        "type": "RECORD"
+    },
+    {
+        "description": "bq-datetime",
+        "mode": "NULLABLE",
+        "name": "created_at",
+        "type": "TIMESTAMP"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "name",
+        "type": "STRING"
+    },
+    {
+        "description": "bq-datetime",
+        "mode": "NULLABLE",
+        "name": "updated_at",
+        "type": "TIMESTAMP"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "outbound_mailbox",
+        "type": "STRING"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "headline",
+        "type": "STRING"
+    },
+    {
+        "description": "bq-datetime",
+        "mode": "NULLABLE",
+        "name": "disqualified_at",
+        "type": "TIMESTAMP"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "lastname",
+        "type": "STRING"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "firstname",
+        "type": "STRING"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "id",
+        "type": "STRING"
+    }
+]
