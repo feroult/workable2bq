@@ -9,7 +9,7 @@ load() {
     bq load --replace \
         --autodetect \
         --source_format=NEWLINE_DELIMITED_JSON \
-        workable.$1 /exports/$1.json
+        workable.$1 /exports_views/$1.json
     echo "---------"
 }
 

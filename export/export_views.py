@@ -29,7 +29,7 @@ def get(path, params={}):
 
 
 def load_collection(start_path, key, fn, context={}):
-    with open(f'/exports/{key}.json', 'a+') as writer:
+    with open(f'/exports_views/{key}.json', 'a+') as writer:
         path = start_path
         while True:
             print(path)
