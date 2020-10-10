@@ -6,7 +6,7 @@ from google.cloud import storage
 bigquery_client = bigquery.Client()
 storage_client = storage.Client()
 
-BUCKET_NAME = os.environ['WORKABLE_TOKEN']
+BUCKET_NAME = os.environ['BUCKET_NAME']
 
 
 def load_tags():
