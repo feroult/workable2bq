@@ -1,4 +1,6 @@
 import os
+import json
+import time
 from workable_api import get
 
 from google.cloud import bigquery
@@ -11,7 +13,7 @@ BUCKET_NAME = os.environ['BUCKET_NAME']
 DEFAULT_CURSOR = '2020-01-01'
 LIMIT = 10
 
-SAVE_CURSOR_COUNT = 100
+SAVE_CURSOR_COUNT = 5
 
 
 def load_candidates():
@@ -30,26 +32,38 @@ def load_candidates():
     for row in query_job:
         load_candidate(row['id'])
         batch_count = batch_count + 1
-        if batch_count == SAVE_CURSOR_COUNT:
+        if batch_count % SAVE_CURSOR_COUNT == 0:
             save_cursor(row['updated_at'])
 
 
 def load_candidate(id):
-    with open(f'/export_views/{key}.json', 'a+') as writer:
-        print(f'loading {id}')
-        j = get(f'candidates/{id}').json()
-        writer.write(json.dumps(j))
-        print(j)
+    with open(f'/export_candidates/{id}.json', 'w') as writer:
+        print(f'Loading {id}')
+        while True:
+            j = get(f'candidates/{id}').json()
+            if 'candidate' not in j:
+                print(j)
+                time.sleep(2)
+                continue
+            o = j['candidate']
+            writer.write(json.dumps(o))
+            time.sleep(0.3)
+            break
 
 
 def save_cursor(cursor):
-    upload_string('tags/cursor', cursor)
+    s = cursor.strftime("%Y-%m-%d %H:%M:%S")
+    print(f'Saving cursor {s}')
+    upload_string(s, 'cursor/candidates')
 
 
 def load_cursor():
     try:
-        return download_string('tags/cursor')
+        cursor = download_string('cursor/candidates').decode("utf-8")
+        print(f'Loading from cursor {cursor}')
+        return cursor
     except:
+        print(f'Loading default cursor {DEFAULT_CURSOR}')
         return DEFAULT_CURSOR
 
 
