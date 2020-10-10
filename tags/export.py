@@ -1,8 +1,12 @@
+import os
+
 from google.cloud import bigquery
 from google.cloud import storage
 
 bigquery_client = bigquery.Client()
 storage_client = storage.Client()
+
+BUCKET_NAME = os.environ['WORKABLE_TOKEN']
 
 
 def load_tags():
@@ -28,20 +32,20 @@ def load_tags():
     print(last_row['updated_at'])
 
 
-def upload_string(bucket_name, s, destination_blob_name):
-    bucket = storage_client.bucket(bucket_name)
+def upload_string(s, destination_blob_name):
+    bucket = storage_client.bucket(BUCKET_NAME)
     blob = bucket.blob(destination_blob_name)
     blob.upload_from_string(s)
 
 
-def download_string(bucket_name, source_blob_name):
-    bucket = storage_client.bucket(bucket_name)
+def download_string(source_blob_name):
+    bucket = storage_client.bucket(BUCKET_NAME)
     blob = bucket.blob(source_blob_name)
     return blob.download_as_string()
 
 
 if __name__ == '__main__':
     # load_tags()
-    upload_string('workable2bq-raw', 'xpto', 'tags/created_at_first')
-    x = download_string('workable2bq-raw', 'tags/created_at_first')
+    upload_string('xpto', 'tags/created_at_first')
+    x = download_string('tags/created_at_first')
     print(f"x={x}")
