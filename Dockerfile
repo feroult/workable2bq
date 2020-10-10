@@ -21,7 +21,7 @@ RUN pip3 install google-cloud-storage google-cloud-bigquery
 RUN pip3 install requests
 
 RUN mkdir /export_views
-RUN mkdir /export_tags
+RUN mkdir /export_details
 RUN mkdir /app
 WORKDIR /app
 

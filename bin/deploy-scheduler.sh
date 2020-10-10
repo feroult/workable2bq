@@ -22,15 +22,15 @@ create_views_scheduler() {
     --oidc-service-account-email=${CLIENT_SERVICE_ACCOUNT_EMAIL}
 }
 
-create_tags_scheduler() {
+create_details_scheduler() {
   gcloud scheduler jobs delete ${JOB_ID}
   gcloud scheduler jobs create http ${JOB_ID} \
     --http-method=GET \
     --schedule="20,30,40 8-20 * * *" \
-    --uri=${URI}/tags \
+    --uri=${URI}/details \
     --oidc-service-account-email=${CLIENT_SERVICE_ACCOUNT_EMAIL}
 }
 
 # create_service_account
 create_views_scheduler
-create_tags_scheduler
+create_details_scheduler
