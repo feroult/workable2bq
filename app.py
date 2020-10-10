@@ -12,9 +12,9 @@ def update():
     return 'ok'
 
 
-@app.route('/details')
+@app.route('/candidates')
 def update():
-    subprocess.run(["/app/bin/export-details.sh"])
+    subprocess.run(["/app/bin/export-candidates.sh"])
     return 'ok'
 
 

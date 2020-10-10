@@ -11,6 +11,8 @@ BUCKET_NAME = os.environ['BUCKET_NAME']
 DEFAULT_CURSOR = '2020-01-01'
 LIMIT = 10
 
+SAVE_CURSOR_COUNT = 100
+
 
 def load_candidates():
     query = f"""
@@ -26,16 +28,18 @@ def load_candidates():
     batch_count = 0
 
     for row in query_job:
-        load_tags(row['id'])
+        load_candidate(row['id'])
         batch_count = batch_count + 1
         if batch_count == SAVE_CURSOR_COUNT:
             save_cursor(row['updated_at'])
 
 
-def load_tags(id):
-    print(f'loading {id}')
-    j = get(f'candidates/{id}').json()
-    print(j)
+def load_candidate(id):
+    with open(f'/export_views/{key}.json', 'a+') as writer:
+        print(f'loading {id}')
+        j = get(f'candidates/{id}').json()
+        writer.write(json.dumps(j))
+        print(j)
 
 
 def save_cursor(cursor):
