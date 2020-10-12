@@ -38,6 +38,8 @@ RUN pip3 install PyMuPDF==1.17.0
 
 RUN mkdir /export_views
 RUN mkdir /export_candidates
+RUN mkdir /export_resumes
+RUN mkdir /export_resumes_pdfs
 RUN mkdir /app
 WORKDIR /app
 

@@ -2,6 +2,7 @@ import os
 import json
 import time
 from workable_api import get
+from resume_parser import load_resume_from_url
 
 from google.cloud import bigquery
 from google.cloud import storage
@@ -40,20 +41,33 @@ def load_candidates():
 
 
 def load_candidate(id):
-    with open(f'/export_candidates/{id}.json', 'w') as writer:
-        print(f'Loading {id}')
-        while True:
-            j = get(f'candidates/{id}').json()
-            if 'candidate' not in j:
-                print(j)
-                time.sleep(2)
-                continue
-            o = j['candidate']
-            s = json.dumps(o)
+    print(f'Loading {id}')
+    while True:
+        j = get(f'candidates/{id}').json()
+        if 'candidate' not in j:
+            print(j)
+            time.sleep(2)
+            continue
+        o = j['candidate']
+        s = json.dumps(o)
+        # local
+        with open(f'/export_candidates/{id}.json', 'w') as writer:
             writer.write(s)
-            upload_string(s, f'candidates/{id}.json')
-            time.sleep(0.2)
-            break
+        # storage
+        upload_string(s, f'candidates/{id}.json')
+        # resume
+        if 'resume_url' in o:
+            load_resume(id, o['resume_url'])
+        time.sleep(0.2)
+        break
+
+
+def load_resume(id, resume_url):
+    print(f'Loading resume {id}')
+    resume = load_resume_from_url(id, resume_url)
+    o = {'id': id, 'resume': resume}
+    with open(f'/export_resumes/{id}.json', 'w') as writer:
+        writer.write(json.dumps(o))
 
 
 def save_cursor(cursor):
