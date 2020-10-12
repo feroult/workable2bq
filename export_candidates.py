@@ -12,7 +12,7 @@ storage_client = storage.Client()
 
 BUCKET_NAME = os.environ['BUCKET_NAME']
 DEFAULT_CURSOR = '2020-01-01'
-LIMIT = 3000
+LIMIT = 6000
 
 SAVE_CURSOR_COUNT = 50
 
@@ -77,7 +77,7 @@ def load_resume(id, resume_url):
     print(f'Loading {id} (resume, {ext})')
     try:
         resume = load_resume_from_url(id, ext, resume_url)
-    except RuntimeError as x:
+    except BaseException as x:
         print(f'cannot parse resume={resume_url}')
         return
     o = {'id': id, 'resume': resume}
