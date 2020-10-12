@@ -9,6 +9,16 @@ load_candidates_details() {
   echo "---------"
 }
 
+load_candidates_resumes() {
+  echo "Loading candidates resumes..."
+  bq load --replace \
+    --autodetect \
+    --source_format=NEWLINE_DELIMITED_JSON \
+   workable.candidates_resumes gs://$BUCKET_NAME/candidates_resumes/*.json
+  echo "---------"
+}
+
+
 create_candidates_view() {
     echo "Creating candidates view..."
 
@@ -37,9 +47,11 @@ WITH valid_candidates AS
       WHEN c.hired_at IS NOT NULL THEN 'hired'
       ELSE 'open'
     END AS status,    
+    r.resume    
     FROM workable.candidates_details c
     JOIN workable.jobs j ON c.job.shortcode = j.shortcode
     JOIN workable.candidates c0 ON c0.id = c.id
+    LEFT OUTER JOIN workable.candidates_resumes r ON r.id = c.id
      AND j.department = 'DEXTRA'
 
 )
@@ -48,7 +60,6 @@ SELECT * FROM valid_candidates"
 
 }
 
-# workable.candidates_details gs://$BUCKET_NAME/candidates/*.json
-
 load_candidates_details
+load_candidates_resumes
 create_candidates_view
