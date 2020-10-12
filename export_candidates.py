@@ -12,7 +12,7 @@ storage_client = storage.Client()
 
 BUCKET_NAME = os.environ['BUCKET_NAME']
 DEFAULT_CURSOR = '2020-01-01'
-LIMIT = 200
+LIMIT = 3000
 
 SAVE_CURSOR_COUNT = 50
 
@@ -41,6 +41,7 @@ def load_candidates():
 
 
 def load_candidate(id):
+    # print(f'Loading {id}', end='')
     print(f'Loading {id}')
     while True:
         j = get(f'candidates/{id}').json()
@@ -56,18 +57,36 @@ def load_candidate(id):
         # storage
         upload_string(s, f'candidates/{id}.json')
         # resume
-        if 'resume_url' in o:
+        if 'resume_url' in o and o['resume_url']:
             load_resume(id, o['resume_url'])
-        time.sleep(0.2)
+        else:
+            time.sleep(0.2)
         break
 
 
 def load_resume(id, resume_url):
-    print(f'Loading resume {id}')
-    resume = load_resume_from_url(id, resume_url)
+    if '.pdf' in resume_url:
+        ext = 'pdf'
+    elif '.docx' in resume_url:
+        ext = 'docx'
+    elif '.doc' in resume_url:
+            ext = 'doc' 
+    else:
+        print(f'unrecognized resume extension: {resume_url}')
+        return    
+    print(f'Loading {id} (resume, {ext})')
+    try:
+        resume = load_resume_from_url(id, ext, resume_url)
+    except RuntimeError as x:
+        print(f'cannot parse resume={resume_url}')
+        return
     o = {'id': id, 'resume': resume}
+    s = json.dumps(o)
+    # local
     with open(f'/export_resumes/{id}.json', 'w') as writer:
-        writer.write(json.dumps(o))
+        writer.write(s)
+    # storage
+    upload_string(s, f'candidates_resumes/{id}.json')
 
 
 def save_cursor(cursor):

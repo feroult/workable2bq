@@ -17,8 +17,10 @@ RUN curl https://sdk.cloud.google.com | \
     /opt/google-cloud-sdk/bin/gcloud components install beta -q
 ENV PATH "/opt/google-cloud-sdk/bin:$PATH"
 
-RUN pip3 install google-cloud-storage google-cloud-bigquery
-RUN pip3 install requests
+RUN apt-get -y update 1>>/tmp/apt.log 2>&1 && apt-get -y install \
+    antiword
+
+RUN pip3 install google-cloud-storage google-cloud-bigquery docx2txt textract requests
 
 # MuPDF
 RUN wget https://mupdf.com/downloads/archive/mupdf-1.17.0-source.tar.gz && \
@@ -34,12 +36,13 @@ RUN cd mupdf && \
       make HAVE_X11=no HAVE_GLFW=no HAVE_GLUT=no prefix=/usr/local install
 
 RUN pip3 install PyMuPDF==1.17.0
-###
+##
+
 
 RUN mkdir /export_views
 RUN mkdir /export_candidates
 RUN mkdir /export_resumes
-RUN mkdir /export_resumes_pdfs
+RUN mkdir /export_resumes_binary
 RUN mkdir /app
 WORKDIR /app
 
