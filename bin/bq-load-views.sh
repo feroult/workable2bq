@@ -23,10 +23,7 @@ create_flow() {
     --use_legacy_sql=false \
 "WITH valid_candidates AS
 (
-  SELECT c.* 
-    FROM workable.candidates c
-    JOIN workable.jobs j ON c.job.shortcode = j.shortcode
-     AND j.department = 'DEXTRA'
+  SELECT * FROM views.candidates
 ),
 last_stage_activities AS
 (
@@ -51,13 +48,13 @@ moved AS
 ),
 disqualified AS
 (
-  SELECT STRUCT(c.id, name, c.domain) AS candidate, job, 'Disqualified' as stage, TIMESTAMP_ADD(updated_at, interval 1 HOUR) AS created_at
+  SELECT STRUCT(c.id, name, c.domain, c.referral, c.seniority, c.status) AS candidate, job, 'Disqualified' as stage, TIMESTAMP_ADD(updated_at, interval 1 HOUR) AS created_at
     FROM valid_candidates c
    WHERE disqualified = true
 ),
 last_activities AS
 (
-  SELECT STRUCT(c.id, c.name, c.domain) AS candidate, job, stage, 
+  SELECT STRUCT(c.id, c.name, c.domain, c.referral, c.seniority, c.status) AS candidate, job, stage, 
          CASE 
             WHEN a.id IS NOT NULL THEN m.created_at
             ELSE c.created_at
@@ -70,7 +67,8 @@ last_activities AS
 ),
 valid_activities AS
 (
- SELECT STRUCT(candidate.id, candidate.name, c.domain) AS candidate, STRUCT(j.title, j.shortcode) AS job, stage_name AS stage, a.created_at created_at
+ SELECT STRUCT(candidate.id, candidate.name, c.domain, c.referral, c.seniority, c.status) AS candidate, 
+        STRUCT(j.title, j.shortcode) AS job, stage_name AS stage, a.created_at created_at
    FROM workable.activities a   
    JOIN workable.jobs j ON a.job_shortcode = j.shortcode   
    JOIN valid_candidates c ON c.id = a.candidate.id   
@@ -114,12 +112,10 @@ activities AS
        a.candidate.id, 
        a.candidate.name,
        a.candidate.domain,
+       a.candidate.referral, 
+       a.candidate.seniority,
        c.sourced,     
-       CASE
-          WHEN c.disqualified = true THEN 'disqualified'
-          WHEN c.hired_at IS NOT NULL THEN 'hired'
-          ELSE 'open'
-       END AS status,
+       a.candidate.status,
        c.created_at,
        c.updated_at,
        TIMESTAMP(c.hired_at) AS hired_at
@@ -197,6 +193,3 @@ load candidates
 create_flow
 create_max_dates
 create_cumulative_flow
-
-# create_activities_flow
-# create_activities_daily
