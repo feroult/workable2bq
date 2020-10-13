@@ -27,7 +27,7 @@ create_candidates_scheduler() {
   gcloud scheduler jobs create http candidates \
     --http-method=GET \
     --schedule="20,40 8-20 * * *" \
-    --uri=${URI}/details \
+    --uri=${URI}/candidates \
     --oidc-service-account-email=${CLIENT_SERVICE_ACCOUNT_EMAIL}
 }
 

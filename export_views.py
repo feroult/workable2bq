@@ -25,7 +25,7 @@ def load_collection(start_path, key, fn, context={}):
                 continue
             if 'paging' in j:
                 uri = j['paging']['next']
-                path = uri[uri.index('?')-len(key):]
+                path = uri[uri.index('/v3/')+4:]
                 time.sleep(0.5)
             else:
                 break

@@ -36,6 +36,7 @@ RUN cd mupdf && \
       make HAVE_X11=no HAVE_GLFW=no HAVE_GLUT=no prefix=/usr/local install
 
 RUN pip3 install PyMuPDF==1.17.0
+RUN pip3 install joblib
 ##
 
 
