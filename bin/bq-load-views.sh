@@ -187,9 +187,9 @@ SELECT * FROM cumulative_flow"
 
 }
 
-# load jobs
-# load activities
-# load candidates
+load jobs
+load activities
+load candidates
 
 # views
 
