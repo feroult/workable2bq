@@ -37,6 +37,10 @@ make_contacts AS
 (
   select distinct(candidate.id) from workable.activities where upper(stage_name) like 'FAZER CONTATO%' 
 ),
+proposals AS
+(
+  select distinct(candidate.id) from workable.activities where upper(stage_name) like 'PROPOSTA%' 
+),
 valid_candidates AS
 (
   SELECT c.*,
@@ -63,6 +67,10 @@ valid_candidates AS
       WHEN m.id IS NOT NULL THEN TRUE
       ELSE FALSE
     END make_contact,      
+    CASE
+      WHEN p.id IS NOT NULL THEN TRUE
+      ELSE FALSE
+    END proposal,
     r.resume    
   FROM workable.candidates_details c
   JOIN workable.jobs j ON c.job.shortcode = j.shortcode
@@ -71,6 +79,7 @@ valid_candidates AS
     AND j.department = 'DEXTRA'
   LEFT OUTER JOIN interviews i ON i.id = c.id
   LEFT OUTER JOIN make_contacts m ON m.id = c.id
+  LEFT OUTER JOIN proposals p ON p.id = c.id
 )
 
 SELECT * FROM valid_candidates"
