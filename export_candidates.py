@@ -45,6 +45,9 @@ def load_candidate(id):
     print(f'Loading {id}')
     while True:
         j = get(f'candidates/{id}').json()
+        if 'error' in j and j['error'] == 'Not found':
+            print('Candidate not found')
+            break          
         if 'candidate' not in j:
             print(j)
             time.sleep(2)

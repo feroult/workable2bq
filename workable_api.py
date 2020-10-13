@@ -18,6 +18,11 @@ def get(path, params={}):
             return requests.get(f'{WORKABLE_API}/{path}', headers=headers, params=params)
         except KeyboardInterrupt:
             sys.exit()
-        except BaseException as e:
+        except BaseException as e:            
             print(e)
             continue
+
+
+if __name__ == '__main__':
+    x = get('candidates/65274ec').json()
+    print(f'x={x}')
