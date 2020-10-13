@@ -29,7 +29,15 @@ create_candidates_view() {
 "CREATE TEMP FUNCTION IS_IN(arr1 ANY TYPE, arr2 ANY TYPE) AS (
   (SELECT COUNT(1) FROM UNNEST(arr1) el JOIN UNNEST(arr2) el USING(el)) > 0);
 
-WITH valid_candidates AS
+WITH interviews AS
+(
+  select distinct(candidate.id) from workable.activities where upper(stage_name) like 'ENTREVISTA%' 
+),
+make_contacts AS
+(
+  select distinct(candidate.id) from workable.activities where upper(stage_name) like 'FAZER CONTATO%' 
+),
+valid_candidates AS
 (
   SELECT c.*,
     CASE 
@@ -46,14 +54,23 @@ WITH valid_candidates AS
       WHEN c.disqualified = true THEN 'disqualified'
       WHEN c.hired_at IS NOT NULL THEN 'hired'
       ELSE 'open'
-    END AS status,    
+    END AS status,
+    CASE
+      WHEN i.id IS NOT NULL THEN TRUE
+      ELSE FALSE
+    END interview,
+    CASE
+      WHEN m.id IS NOT NULL THEN TRUE
+      ELSE FALSE
+    END make_contact,      
     r.resume    
-    FROM workable.candidates_details c
-    JOIN workable.jobs j ON c.job.shortcode = j.shortcode
-    JOIN workable.candidates c0 ON c0.id = c.id
-    LEFT OUTER JOIN workable.candidates_resumes r ON r.id = c.id
-     AND j.department = 'DEXTRA'
-
+  FROM workable.candidates_details c
+  JOIN workable.jobs j ON c.job.shortcode = j.shortcode
+  JOIN workable.candidates c0 ON c0.id = c.id
+  LEFT OUTER JOIN workable.candidates_resumes r ON r.id = c.id
+    AND j.department = 'DEXTRA'
+  LEFT OUTER JOIN interviews i ON i.id = c.id
+  LEFT OUTER JOIN make_contacts m ON m.id = c.id
 )
 
 SELECT * FROM valid_candidates"
