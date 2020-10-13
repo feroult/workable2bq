@@ -14,8 +14,8 @@ create_service_account() {
 }
 
 create_views_scheduler() {
-  gcloud scheduler jobs delete ${JOB_ID}
-  gcloud scheduler jobs create http ${JOB_ID} \
+  gcloud scheduler jobs delete views
+  gcloud scheduler jobs create http views \
     --http-method=GET \
     --schedule="0 8-20 * * *" \
     --uri=${URI}/views \
@@ -23,10 +23,10 @@ create_views_scheduler() {
 }
 
 create_candidates_scheduler() {
-  gcloud scheduler jobs delete ${JOB_ID}
-  gcloud scheduler jobs create http ${JOB_ID} \
+  gcloud scheduler jobs delete candidates
+  gcloud scheduler jobs create http candidates \
     --http-method=GET \
-    --schedule="20,30,40 8-20 * * *" \
+    --schedule="20,40 8-20 * * *" \
     --uri=${URI}/details \
     --oidc-service-account-email=${CLIENT_SERVICE_ACCOUNT_EMAIL}
 }
